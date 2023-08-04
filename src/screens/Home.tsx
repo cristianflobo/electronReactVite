@@ -3,31 +3,44 @@ import Keyboard from 'react-simple-keyboard';
 import '../App.scss';
 import '../styles/home.css';
 import 'react-simple-keyboard/build/css/index.css';
-import KeyBoardSimple from '@/components/KeyBoardSimple';
-import InputAndKeyBoard from '@/components/InputAndKeyBoard';
+
+interface State {
+  input1: string;
+  input2: string;
+}
 
 function Home() {
   const [activarKeyBoard, setActivarKeyBoard] = useState(false);
-  const [inputIN, setInputIN] = useState({input1:"", input2:""});
-  const [focus, setFocus] = useState("");
+  const [inputIN, setInputIN] = useState<State>({input1:"", input2:""});
+  const [focus, setFocus] = useState<string>("");
   const [layout, setLayout] = useState('default');
  // const keyboard = useRef();
-
+ 
   const onChange = (input: string) => {
-    setInputIN({
-      ...inputIN,
-      [focus]: input
-    });
+    // setInputIN({
+    //   ...inputIN,
+    //   [focus]: input
+    // });
   };
-  const onKeyPress = (button: string) => {
-    console.log('Button pressed', button);
+  const onKeyPress = (button: string) => 
+  {
+    if(button == "{bksp}"){
+      setInputIN({
+        ...inputIN,
+        [focus]: inputIN[focus as keyof State].substring(0, inputIN[focus as keyof State].length - 1)
+      });
+    }else {
+      setInputIN({
+        ...inputIN,
+        [focus]: inputIN[focus as keyof State] +  button
+      });
+    }
+    
+
     if (button === '{enter}') setActivarKeyBoard(false);
-    if (button === '{shift}' || button === '{lock}') handleShift();
+    //if (button === '{shift}' || button === '{lock}') handleShift();
   };
 
-  const seleccion = (e) => {
-  
-  };
   const onInputFocus = (dataFocus: string) => {
     if(dataFocus !== focus){
     }
@@ -39,13 +52,13 @@ function Home() {
       <input
         onFocus={() => onInputFocus('input1')}
         value={inputIN.input1}
-        onSelect={(e) => seleccion(e)}
+        
         placeholder="teclado-virtual"
       />
             <input
         onFocus={() => onInputFocus('input2')}
         value={inputIN.input2}
-        onSelect={(e) => seleccion(e)}
+  
         placeholder="teclado-virtual"
       />
       {activarKeyBoard ? (
